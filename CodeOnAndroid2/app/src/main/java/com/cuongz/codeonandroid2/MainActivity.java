@@ -10,7 +10,10 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -40,10 +43,14 @@ public class MainActivity extends AppCompatActivity {
                 String string = editable.toString();
                 String[] split = string.split("\\s");
 
+
                 int startIndex = 0;
                 for(int i = 0 ; i < split.length ; i++){
                     String s = split[i];
 
+                    if(s.equals("{")){
+                        textCode.append("}");
+                    }
                     if(map.containsKey(s)){
 
                         int index = string.indexOf(s, startIndex);
@@ -64,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
                                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                             startIndex = index + s.length();
                         }
+
                     }
 
                 }
@@ -72,6 +80,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void inputColor(){
+        List<String> a1 = new ArrayList<>(Arrays.asList("a", "b", "c"));
+        for(int i = 0; i < a1.size(); i++){
+            map.put(a1.get(i), Color.CYAN);
+        }
+
         map.put("abstract", Color.CYAN); map.put("and", Color.CYAN);
         map.put("arguments", Color.CYAN); map.put("assert", Color.CYAN);
 //        map.put("associativity", Color.CYAN); map.put("auto", Color.CYAN);
@@ -102,11 +115,9 @@ public class MainActivity extends AppCompatActivity {
         map.put("switch", Color.CYAN); map.put("this", Color.CYAN);
         map.put("true", Color.CYAN); map.put("try", Color.CYAN);
         map.put("void", Color.CYAN);
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put(); map.put();
+        map.put("int", Color.RED); map.put("long", Color.RED);
+        map.put("float", Color.RED); map.put("String", Color.RED);
+        map.put("double", Color.RED); map.put("char", Color.RED);
 //        map.put();
 //        map.put();
 //        map.put();
