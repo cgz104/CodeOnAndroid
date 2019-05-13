@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 int startIndex = 0;
                 for(int i = 0 ; i < split.length ; i++){
                     String s = split[i];
+
                     if(map.containsKey(s)){
 
                         int index = string.indexOf(s, startIndex);
@@ -53,6 +54,16 @@ public class MainActivity extends AppCompatActivity {
                                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                         startIndex = index + s.length();
+                    }
+                    else if(!s.isEmpty()){
+                        if(s.charAt(0) == '"' && s.charAt(s.length() - 1) == '"'){
+                            int index = string.indexOf(s, startIndex);
+                            editable.setSpan(new ForegroundColorSpan(Color.GREEN),
+                                    index,
+                                    index + s.length(),
+                                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            startIndex = index + s.length();
+                        }
                     }
 
                 }

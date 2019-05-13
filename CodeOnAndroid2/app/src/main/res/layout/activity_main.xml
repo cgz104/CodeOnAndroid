@@ -4,16 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/darker_gray"
+    android:background="#28285A"
     tools:context=".MainActivity">
 
     <EditText
+        android:id="@+id/textCode"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/textCode"
         android:gravity="top"
-        android:background="@null"
         android:inputType="text|textMultiLine"
+        android:backgroundTint="@android:color/transparent"
+        android:textColor="#FFFFFF"
         android:typeface="monospace" />
 
 </ScrollView>
