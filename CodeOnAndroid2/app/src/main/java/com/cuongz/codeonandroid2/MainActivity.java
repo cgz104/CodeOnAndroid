@@ -1,6 +1,14 @@
 package com.cuongz.codeonandroid2;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -8,8 +16,15 @@ import android.text.Spannable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     HashMap<String, Integer> map = new HashMap<>();
     EditText textCode;
+    private static final int PERMISSION_REQUEST_CODE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +59,22 @@ public class MainActivity extends AppCompatActivity {
                 String string = editable.toString();
                 String[] split = string.split("\\s");
 
-
+                int i = 0;
                 int startIndex = 0;
-                for(int i = 0 ; i < split.length ; i++){
+//                for(int i = 0 ; i < split.length ; i++){
+                while(i < split.length){
                     String s = split[i];
 
-                    if(s.equals("{")){
-                        textCode.append("}");
-                    }
+//                    if(s.equals("{")){
+//                        editable.append("}");
+////                        Log.w("before", "sdfsd");
+////                        s = "{}";
+//////                        editable.replace(0, editable.length(), string);
+////                        Log.w("after", "fgsg");
+//////                        Log.w("string", string);
+//////                        string = editable.toString();
+//
+//                    }
                     if(map.containsKey(s)){
 
                         int index = string.indexOf(s, startIndex);
@@ -70,116 +94,179 @@ public class MainActivity extends AppCompatActivity {
                                     index + s.length(),
                                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                             startIndex = index + s.length();
+                        }else{
+                            int index = string.indexOf(s, startIndex);
+                            editable.setSpan(new ForegroundColorSpan(Color.WHITE),
+                                    index,
+                                    index + s.length(),
+                                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            startIndex = index + s.length();
                         }
 
                     }
+                    else if(!map.containsKey(s)){
+                        int index = string.indexOf(s, startIndex);
+                        editable.setSpan(new ForegroundColorSpan(Color.WHITE),
+                                index,
+                                index + s.length(),
+                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        startIndex = index + s.length();
+                    }
 
+                    Log.w("number", string);
+                    i++;
                 }
+                //
             }
         });
     }
 
     public void inputColor(){
-        List<String> a1 = new ArrayList<>(Arrays.asList("a", "b", "c"));
-        for(int i = 0; i < a1.size(); i++){
-            map.put(a1.get(i), Color.CYAN);
+        List<String> KEYWORD = new ArrayList<>(Arrays.asList("abstract", "and",
+                "arguments", "assert", "break", "case",
+                "catch", "char", "class", "const",
+                "continue", "default", "def", "in",
+                "init", "delete", "do", "dynamic",
+                "type", "if", "else", "elif",
+                "enum", "extend", "false", "final",
+                "for", "from", "function", "get",
+                "go", "goto", "interface", "local",
+                "map", "namespace", "new", "null",
+                "or", "override", "package", "prefix",
+                "print", "private", "protected", "public",
+                "return", "sizeof", "static", "struct",
+                "switch", "this", "true", "try",
+                "void"));
+
+        for(int i = 0; i < KEYWORD.size(); i++){
+            map.put(KEYWORD.get(i), Color.CYAN);
         }
 
-        map.put("abstract", Color.CYAN); map.put("and", Color.CYAN);
-        map.put("arguments", Color.CYAN); map.put("assert", Color.CYAN);
-//        map.put("associativity", Color.CYAN); map.put("auto", Color.CYAN);
-        map.put("break", Color.CYAN); map.put("case", Color.CYAN);
-        map.put("catch", Color.CYAN); map.put("char", Color.CYAN);
-        map.put("class", Color.CYAN); map.put("const", Color.CYAN);
-        map.put("continue", Color.CYAN); map.put("default", Color.CYAN);
-        map.put("def", Color.CYAN); map.put("in", Color.CYAN);
-        map.put("init", Color.CYAN); map.put("delete", Color.CYAN);
-        map.put("do", Color.CYAN); map.put("dynamic", Color.CYAN);
-        map.put("type", Color.CYAN); map.put("if", Color.CYAN);
-        map.put("else", Color.CYAN); map.put("elif", Color.CYAN);
-        map.put("enum", Color.CYAN); map.put("extend", Color.CYAN);
-        map.put("false", Color.CYAN); map.put("final", Color.CYAN);
-        map.put("for", Color.CYAN); map.put("from", Color.CYAN);
-        map.put("function", Color.CYAN); map.put("get", Color.CYAN);
-        map.put("go", Color.CYAN); map.put("goto", Color.CYAN);
-        map.put("interface", Color.CYAN); map.put("lazy", Color.CYAN);
-        map.put("local", Color.CYAN); map.put("map", Color.CYAN);
-        map.put("namespace", Color.CYAN); map.put("new", Color.CYAN);
-        map.put("null", Color.CYAN); map.put("NULL", Color.CYAN);
-        map.put("or", Color.CYAN); map.put("override", Color.CYAN);
-        map.put("package", Color.CYAN); map.put("prefix", Color.CYAN);
-        map.put("print", Color.CYAN); map.put("private", Color.CYAN);
-        map.put("protected", Color.CYAN); map.put("public", Color.CYAN);
-        map.put("return", Color.CYAN); map.put("sizeof", Color.CYAN);
-        map.put("static", Color.CYAN); map.put("struct", Color.CYAN);
-        map.put("switch", Color.CYAN); map.put("this", Color.CYAN);
-        map.put("true", Color.CYAN); map.put("try", Color.CYAN);
-        map.put("void", Color.CYAN);
-        map.put("int", Color.RED); map.put("long", Color.RED);
-        map.put("float", Color.RED); map.put("String", Color.RED);
-        map.put("double", Color.RED); map.put("char", Color.RED);
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put(); map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-//        map.put();
-        map.put("void", Color.BLUE); map.put("String", Color.RED);
+        List<String> TYPE = new ArrayList<>(Arrays.asList("int", "long",
+                "float", "String", "char", "double"));
+
+        for(int i = 0; i < TYPE.size(); i++){
+            map.put(TYPE.get(i), Color.RED);
+        }
+
+
+    }
+    public void saveFile(View view){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View v = inflater.inflate(R.layout.save_file, null);
+        final EditText fileName = v.findViewById(R.id.fileName);
+
+        builder.setView(inflater.inflate(R.layout.save_file, null))
+                .setTitle("Save file")
+                // Add action buttons
+                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (isExternalStorageWritable()){
+                            if (checkPermission()){
+                                File sdcard = Environment.getExternalStorageDirectory();
+                                File dir = new File(sdcard.getAbsolutePath() + "/src/");
+                                Log.w("A", "correct here");
+                                dir.mkdirs();
+                                File file = new File(dir, fileName.getText().toString());
+                                Log.w("FN",fileName.getText().toString());
+                                Log.w("B", "correct here");
+                                FileOutputStream os;
+                                try{
+                                    os = new FileOutputStream(file, true);
+                                    os.write(textCode.getText().toString().getBytes());
+                                    os.flush();
+                                    os.close();
+                                }catch (IOException e){
+                                    e.printStackTrace();
+                                }
+                            }else{
+                                requestPermission();
+                            }
+                        }else{
+                            Log.w("status", "can't write on storage");
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+        builder.show();
     }
 
+    public boolean isExternalStorageWritable(){
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
+            Log.i("State", "Yes, it is writable!");
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean checkPermission(){
+        int check = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        return (check == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private void requestPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Toast.makeText(MainActivity.this, "Write External Storage permission allows us to create files. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
+        } else {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.e("value", "Permission Granted, Now you can use local drive .");
+                } else {
+                    Log.e("value", "Permission Denied, You cannot use local drive .");
+                }
+                break;
+        }
+    }
+
+//    public File writeFileExternalStorage(String fileName, String content) {
+//
+//        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), fileName);
+//        if (!file.mkdirs()) {
+//            file.mkdirs();
+//        }
+//
+////        //Text of the Document
+////
+////        //Checking the availability state of the External Storage.
+////        String state = Environment.getExternalStorageState();
+////        if (!Environment.MEDIA_MOUNTED.equals(state)) {
+////
+////            //If it isn't mounted - we can't write into it.
+////            return;
+////        }
+//
+//
+//        //This point and below is responsible for the write operation
+//        FileOutputStream outputStream;
+//        try {
+//            file.createNewFile();
+//            //second argument of FileOutputStream constructor indicates whether
+//            //to append or create new file if one exists
+//            outputStream = new FileOutputStream(file, true);
+//
+//            outputStream.write(content.getBytes());
+//            outputStream.flush();
+//            outputStream.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return file;
+//    }
 
 }
